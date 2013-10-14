@@ -19,7 +19,8 @@ angular
   var url
     , protocols
     , socket
-    , map;
+    , map
+    , queue;
 
   return {
 
@@ -29,6 +30,7 @@ angular
     $get: ['$rootScope', '$timeout'
     , function ($rootScope, $timeout) {
 
+      queue = [];
       map = {};
 
       if(!url) {
@@ -61,6 +63,9 @@ angular
 
         socket.onopen = function (e) {
           $rootScope.$broadcast('ng2ws:socket::open', e);
+          queue.forEach(function (msg) {
+            socket.send(msg);
+          });
         };
 
         socket.onerror = function (error) {
@@ -94,6 +99,14 @@ angular
       return {
         open: connect,
         close: disconnect,
+        send: function (label, data) {
+          var msg = JSON.stringify({label: label, data: data});
+          if(socket.readyState === 1) {
+            socket.send(msg);
+          } else {
+            queue.push(msg);
+          }
+        },
         on: function (name, callback) {
           if(map[name] === undefined) {
             map[name] = [];
