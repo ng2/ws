@@ -1,0 +1,16 @@
+{
+  "name": "ng2ws",
+  "repo": "ng2/ws",
+  "description": "",
+  "version": "0.0.1",
+  "keywords": [],
+  "dependencies": {},
+  "development": {},
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": [
+    "index.js",
+    "providers/ws.js"
+  ],
+  "styles": []
+}
