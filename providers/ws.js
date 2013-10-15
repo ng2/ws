@@ -57,12 +57,12 @@ angular
           $rootScope.$broadcast('ng2ws:socket::message', msg);
           if(msg.label) {
             map[msg.label] && map[msg.label].forEach(function (listener) {
-              listener(msg.data);
+              listener.fn(msg.data);
             });
           } else {
             Object.keys(map).forEach(function (label) {
               map[label].forEach(function (listener) {
-                listener(msg);
+                listener.fn(msg);
               });
             });
           }
@@ -131,9 +131,16 @@ angular
         },
         on: function (name, callback) {
           if(map[name] === undefined) {
-            map[name] = [];
+            map[name] = []
           }
-          return map[name].push(apply(callback));
+          var something = map[name].filter(function (obj) {
+              return obj.original === callback.toString();
+            });
+          if(something.length > 0) {
+            return;
+          } else {
+            return map[name].push({original: callback.toString(), fn: apply(callback)});
+          }
         }
       };
     }],
