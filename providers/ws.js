@@ -41,6 +41,7 @@ angular
       var connect = function () {
         socket = new WebSocket(url, protocols);
         $rootScope.$broadcast('ng2ws:socket::connect', socket);
+        fairClose = false;
 
         socket.onmessage = function (e) {
           var msg = JSON.parse(e.data);
@@ -71,12 +72,19 @@ angular
         socket.onerror = function (error) {
           $rootScope.$broadcast('ng2ws:socket::error', error);
         };
+
+        socket.onclose = function (e) {
+          $rootScope.$broadcast('ng2ws:socket::close', e);
+          if (!e.wasClean) {
+            $rootScope.$broadcast('ng2ws:socket::reconnect', e);
+            connect();
+          }
+        }
       };
 
       var disconnect = function () {
-        $rootScope.$broadcast('ng2ws:socket::disconnect', socket);
         socket.close();
-        $rootScope.$broadcast('ng2ws:socket::close', socket);
+        $rootScope.$broadcast('ng2ws:socket::disconnect', socket);
       }
 
       /**
