@@ -51,7 +51,7 @@ angular
 
         socket.onmessage = function (e) {
           var msg = JSON.parse(e.data);
-          if(msg.data) {
+          if(typeof msg.data === 'string' && msg.data[0] === '{') {
             msg.data = JSON.parse(msg.data);
           }
           $rootScope.$broadcast('ng2ws:socket::message', msg);
