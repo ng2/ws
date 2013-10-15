@@ -41,10 +41,12 @@ angular
         url = "ws://"+window.location.origin.split('//').pop();
       }
 
+      retryMax = retryMax || 5;
+      coolDown = coolDown || 2000; 
+
       var connect = function () {
         socket = new WebSocket(url, protocols);
         $rootScope.$broadcast('ng2ws:socket::connect', socket);
-        fairClose = false;
 
         socket.onmessage = function (e) {
           var msg = JSON.parse(e.data);
