@@ -20,7 +20,9 @@ angular
     , protocols
     , socket
     , map
-    , queue;
+    , queue
+    , retryMax
+    , coolDown;
 
   return {
 
@@ -75,9 +77,12 @@ angular
 
         socket.onclose = function (e) {
           $rootScope.$broadcast('ng2ws:socket::close', e);
-          if (!e.wasClean) {
-            $rootScope.$broadcast('ng2ws:socket::reconnect', e);
-            connect();
+          if (!e.wasClean && retryCount < retryMax) {
+            $timeout(function (argument) {
+              $rootScope.$broadcast('ng2ws:socket::reconnect', e);
+              connect();
+              retryCount += 1;
+            }, coolDown);
           }
         }
       };
@@ -123,6 +128,14 @@ angular
         }
       };
     }],
+
+    setRetryLimit: function (number) {
+      retryMax = typeof number === 'Number' ? number : 5;
+    },
+
+    setCooldown: function (ms) {
+      coolDown = typeof ms === 'Number' ? ms : 2000;
+    },
 
     setUrl: function (string) {
       url = string;
