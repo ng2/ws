@@ -45,6 +45,7 @@ angular
       coolDown = coolDown || 2000; 
 
       var connect = function () {
+        retryCount = 0;
         socket = new WebSocket(url, protocols);
         $rootScope.$broadcast('ng2ws:socket::connect', socket);
 
