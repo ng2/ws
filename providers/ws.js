@@ -34,6 +34,7 @@ angular
 
       queue = [];
       map = {};
+      retryCount = 0;
 
       if(!url) {
         $rootScope.$broadcast('ng2ws:log', "Using "+window.location.origin+" as websockets server.");
@@ -77,12 +78,17 @@ angular
 
         socket.onclose = function (e) {
           $rootScope.$broadcast('ng2ws:socket::close', e);
-          if (!e.wasClean && retryCount < retryMax) {
+          if (!e.wasClean) {
+            if(retryCount >= retryMax) {
+              return $rootScope.$broadcast('ng2ws:socket::retrylimit');
+            }
             $timeout(function (argument) {
               $rootScope.$broadcast('ng2ws:socket::reconnect', e);
               connect();
               retryCount += 1;
             }, coolDown);
+          } else {
+            retryCount = 0;
           }
         }
       };
