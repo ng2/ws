@@ -55,7 +55,7 @@ angular
           }
           $rootScope.$broadcast('ng2ws:socket::message', msg);
           if(msg.label) {
-            map[msg.label].forEach(function (listener) {
+            map[msg.label] && map[msg.label].forEach(function (listener) {
               listener(msg.data);
             });
           } else {
