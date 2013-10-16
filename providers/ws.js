@@ -121,12 +121,12 @@ angular
       return {
         open: function () {
           if(!socket || socket.readyState === 3) {
-            this.connect();
+            connect();
           }
         },
         close: function () {
           if(socket && socket.readyState === 1) {
-            this.disconnect();
+            disconnect();
           }
         },
         send: function (label, data) {
