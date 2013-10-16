@@ -110,11 +110,9 @@ angular
        */
       var apply = function (callback) {
         return function (data) {
-          return $timeout(function () {
-            $rootScope.$apply(function () {
-              callback(data);
-            });
-          },0);
+          return $rootScope.$apply(function () {
+            callback(data);
+          });
         };
       };
 
