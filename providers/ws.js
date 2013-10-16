@@ -119,8 +119,16 @@ angular
       };
 
       return {
-        open: connect,
-        close: disconnect,
+        open: function () {
+          if(!socket || socket.readyState === 3) {
+            this.connect();
+          }
+        },
+        close: function () {
+          if(socket && socket.readyState === 1) {
+            this.disconnect();
+          }
+        },
         send: function (label, data) {
           var msg = JSON.stringify({label: label, data: data});
           if(socket && socket.readyState === 1) {
