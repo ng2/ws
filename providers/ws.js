@@ -1,20 +1,20 @@
 /**
 * @ngdoc service
-* @name ng2ws.providers:wsProvider
+* @name ng2-ws.providers:WebSockets
 * @description
 * Provider configuration docs.
 */
 
 /**
 * @ngdoc service
-* @name ng2ws.services:ws
+* @name ng2-ws.services:WebSockets
 * @description
 * Service consumption docs.
 */
 
 angular
-.module('ng2ws')
-.provider('ng2ws', function () {
+.module('ng2-ws')
+.provider('WebSockets', function () {
 
   var url
     , protocols
