@@ -50,20 +50,23 @@ angular
         $rootScope.$broadcast('ng2ws:socket::connect', socket);
 
         socket.onmessage = function (e) {
-          var msg = JSON.parse(e.data);
-          if(typeof msg.data === 'string' && msg.data[0] === '{') {
-            msg.data = JSON.parse(msg.data);
+          var msg = e.data;
+          if(typeof msg === 'string' && msg[0] === '{') {
+            msg = JSON.parse(msg);
+            if(typeof msg.data === 'string' && msg.data[0] === '{') {
+              msg.data = JSON.parse(msg.data);
+            }
+          } else {
+            msg = {
+              label: msg,
+              data: msg
+            };
           }
+          
           $rootScope.$broadcast('ng2ws:socket::message', msg);
           if(msg.label) {
             map[msg.label] && map[msg.label].forEach(function (listener) {
               listener.fn(msg.data);
-            });
-          } else {
-            Object.keys(map).forEach(function (label) {
-              map[label].forEach(function (listener) {
-                listener.fn(msg);
-              });
             });
           }
         };
